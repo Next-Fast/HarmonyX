@@ -57,7 +57,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MonoMod.RuntimeDetour" Version="$(MonoModRuntimeDetour)" />
+        <PackageReference Include="MonoMod.RuntimeDetour" Version="25.2.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -72,7 +72,10 @@
         <PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
 
         <!-- Minimal suitable major version -->
-        <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <PackageReference Include="System.Text.Json" Version="9.0.3" />
     </ItemGroup>
 
     <Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
