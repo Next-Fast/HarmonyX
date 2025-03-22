@@ -81,7 +81,7 @@ namespace HarmonyLibTests
 		public static ConstraintResult AssertThat<TActual>(TActual actual, IResolveConstraint expression, string message = null, params object[] args)
 		{
 			var capture = new CaptureResultConstraint(expression);
-			Assert.That(actual, capture, message, args);
+			Assert.That(actual, capture, string.Format(message!, args));
 			return capture.capturedResult;
 		}
 
@@ -95,7 +95,7 @@ namespace HarmonyLibTests
 		public static ConstraintResult AssertThat<TActual>(ActualValueDelegate<TActual> del, IResolveConstraint expr, string message = null, params object[] args)
 		{
 			var capture = new CaptureResultConstraint(expr);
-			Assert.That(del, capture, message, args);
+			Assert.That(del, capture, string.Format(message!, args));
 			return capture.capturedResult;
 		}
 
@@ -109,7 +109,7 @@ namespace HarmonyLibTests
 		public static ConstraintResult AssertThat(TestDelegate code, IResolveConstraint constraint, string message = null, params object[] args)
 		{
 			var capture = new CaptureResultConstraint(constraint);
-			Assert.That(code, capture, message, args);
+			Assert.That(code, capture, string.Format(message!, args));
 			return capture.capturedResult;
 		}
 
@@ -179,13 +179,8 @@ namespace HarmonyLibTests
 
 		// Run an action in a test isolation context.
 		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-#if NETCOREAPP
 			TestAssemblyLoadContext.RunInIsolationContext(action);
-#else
-			TestDomainProxy.RunInIsolationContext(action);
-#endif
 
-#if NETCOREAPP
 		// .NET Core does not support multiple AppDomains, but it does support unloading assemblies via AssemblyLoadContext.
 		// Based off sample code in https://docs.microsoft.com/en-us/dotnet/standard/assembly/unloadability
 		class TestAssemblyLoadContext : AssemblyLoadContext, ITestIsolationContext
@@ -225,58 +220,6 @@ namespace HarmonyLibTests
 			// There's no separate AppDomain, so this is just an alias for callback(arg).
 			public void ParentCallback<T>(Action<T> callback, T arg) => callback(arg);
 		}
-#else
-		// For .NET Framework and its multiple AppDomain support, need a MarshalByRefObject, so that for an instance created
-		// via appDomain.CreateInstanceAndUnwrap, all calls to that instance's methods are executed in that appDomain.
-
-		class TestDomainProxy(AppDomain parentDomain) : MarshalByRefObject, ITestIsolationContext
-		{
-			readonly AppDomain parentDomain = parentDomain;
-
-			// Run an action in "isolation" (seperate AppDomain that's unloaded afterwards).
-			// This a static method and thus is run in the AppDomain of the caller (the main AppDomain).
-			public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-			{
-				var testDomain = AppDomain.CreateDomain("TestDomain", AppDomain.CurrentDomain.Evidence, new AppDomainSetup
-				{
-					ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
-				});
-				// There's no simpler way to call a non-parameterless constructor than this monstrosity.
-				var proxy = (TestDomainProxy)testDomain.CreateInstanceAndUnwrap(
-					typeof(TestDomainProxy).Assembly.FullName, typeof(TestDomainProxy).FullName, default, default, default,
-					[AppDomain.CurrentDomain], default, default
-#if NET35
-					, default // .NET Framework requires obsolete Evidence parameter overload
-#endif
-					);
-				proxy.Run(action);
-				AppDomain.Unload(testDomain);
-			}
-
-			// Rules for proxy instance methods:
-			// Ensure that all loaded Types of the dummy assemblies are never leaked out of the test domain, so:
-			// 1) never return loaded Types (or instances of those Types); and
-			// 2) always catch exceptions that may contain loaded Types (or instances of those Types) directly.
-			// As long as there is no such leakage, AppDomain.Unload will fully unload the domain and all its assemblies.
-
-			void Run(Action<ITestIsolationContext> action) => action(this);
-
-			// Note: Console usage won't work within a non-main domain - that has to be delegated to the main domain via a callback.
-			public void ParentCallback<T>(Action<T> action, T arg) => parentDomain.DoCallBack(new ActionTCallback<T>(action, arg).Call);
-
-			// Delegates used for DoCallback must be serializable.
-			[Serializable]
-			class ActionTCallback<T>(Action<T> action, T arg)
-			{
-				readonly Action<T> action = action;
-				readonly T arg = arg;
-
-				public void Call() => action(arg);
-			}
-
-			public void AssemblyLoad(string assemblyName) => _ = Assembly.Load(assemblyName);
-		}
-#endif
 	}
 
 	public class TestLogger

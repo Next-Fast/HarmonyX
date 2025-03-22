@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using HarmonyLibTests;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -19,10 +20,10 @@ class TestStackTraceFixes : TestLogger
 		var dummyPrefix = SymbolExtensions.GetMethodInfo(() => DummyPrefix());
 
 		_ = harmony.Patch(getExecutingAssemblyTarget, new HarmonyMethod(dummyPrefix));
-		Assert.AreEqual(getExecutingAssemblyTarget.Module.Assembly, GetExecutingAssemblyTarget());
+		ClassicAssert.AreEqual(getExecutingAssemblyTarget.Module.Assembly, GetExecutingAssemblyTarget());
 
 		_ = harmony.Patch(getMethodTarget, new HarmonyMethod(dummyPrefix));
-		Assert.AreEqual(getMethodTarget, GetMethodTarget());
+		ClassicAssert.AreEqual(getMethodTarget, GetMethodTarget());
 	}
 
 

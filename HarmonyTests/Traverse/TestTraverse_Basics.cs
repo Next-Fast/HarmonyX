@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 
 namespace HarmonyLibTests.Tools
@@ -18,7 +19,7 @@ namespace HarmonyLibTests.Tools
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
 
 			for (var i = 0; i < TraverseFields.testStrings.Length; i++)
-				Assert.AreEqual(TraverseFields.testStrings[i], instance.GetTestField(i));
+				ClassicAssert.AreEqual(TraverseFields.testStrings[i], instance.GetTestField(i));
 		}
 
 		[Test]
@@ -27,14 +28,14 @@ namespace HarmonyLibTests.Tools
 			foreach (var name in fieldNames)
 			{
 				var fInfo = AccessTools.DeclaredField(typeof(Traverse), name);
-				Assert.NotNull(fInfo);
+				ClassicAssert.NotNull(fInfo);
 			}
 		}
 
 		public static void AssertIsEmpty(Traverse trv)
 		{
 			foreach (var name in fieldNames)
-				Assert.AreEqual(null, AccessTools.DeclaredField(typeof(Traverse), name).GetValue(trv));
+				ClassicAssert.AreEqual(null, AccessTools.DeclaredField(typeof(Traverse), name).GetValue(trv));
 		}
 
 		class FooBar
@@ -73,38 +74,38 @@ namespace HarmonyLibTests.Tools
 		{
 			var trv = Traverse.Create(null);
 
-			Assert.NotNull(trv);
-			Assert.Null(trv.ToString());
+			ClassicAssert.NotNull(trv);
+			ClassicAssert.Null(trv.ToString());
 
 			// field access
 
 			var ftrv = trv.Field("foo");
-			Assert.NotNull(ftrv);
+			ClassicAssert.NotNull(ftrv);
 
-			Assert.Null(ftrv.GetValue());
-			Assert.Null(ftrv.ToString());
-			Assert.AreEqual(0, ftrv.GetValue<int>());
-			Assert.AreSame(ftrv, ftrv.SetValue(123));
+			ClassicAssert.Null(ftrv.GetValue());
+			ClassicAssert.Null(ftrv.ToString());
+			ClassicAssert.AreEqual(0, ftrv.GetValue<int>());
+			ClassicAssert.AreSame(ftrv, ftrv.SetValue(123));
 
 			// property access
 
 			var ptrv = trv.Property("foo");
-			Assert.NotNull(ptrv);
+			ClassicAssert.NotNull(ptrv);
 
-			Assert.Null(ptrv.GetValue());
-			Assert.Null(ptrv.ToString());
-			Assert.Null(ptrv.GetValue<string>());
-			Assert.AreSame(ptrv, ptrv.SetValue("test"));
+			ClassicAssert.Null(ptrv.GetValue());
+			ClassicAssert.Null(ptrv.ToString());
+			ClassicAssert.Null(ptrv.GetValue<string>());
+			ClassicAssert.AreSame(ptrv, ptrv.SetValue("test"));
 
 			// method access
 
 			var mtrv = trv.Method("zee");
-			Assert.NotNull(mtrv);
+			ClassicAssert.NotNull(mtrv);
 
-			Assert.Null(mtrv.GetValue());
-			Assert.Null(mtrv.ToString());
-			Assert.AreEqual(0, mtrv.GetValue<float>());
-			Assert.AreSame(mtrv, mtrv.SetValue(null));
+			ClassicAssert.Null(mtrv.GetValue());
+			ClassicAssert.Null(mtrv.ToString());
+			ClassicAssert.AreEqual(0, mtrv.GetValue<float>());
+			ClassicAssert.AreSame(mtrv, mtrv.SetValue(null));
 		}
 
 		// Traverse.ToString() should return a meaningful string representation of its initial value
@@ -115,7 +116,7 @@ namespace HarmonyLibTests.Tools
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
 
 			var trv = Traverse.Create(instance);
-			Assert.AreEqual(instance.ToString(), trv.ToString());
+			ClassicAssert.AreEqual(instance.ToString(), trv.ToString());
 		}
 
 		// Traverse.ToString() should return a meaningful string representation of its initial type
@@ -124,11 +125,11 @@ namespace HarmonyLibTests.Tools
 		public void Test_Traverse_Create_Type_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
-			Assert.NotNull(instance);
+			ClassicAssert.NotNull(instance);
 
 			var type = typeof(TraverseFields_AccessModifiers);
 			var trv = Traverse.Create(type);
-			Assert.AreEqual(type.ToString(), trv.ToString());
+			ClassicAssert.AreEqual(type.ToString(), trv.ToString());
 		}
 	}
 }

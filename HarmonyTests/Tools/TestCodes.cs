@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Reflection.Emit;
 using static HarmonyLib.Code;
 
@@ -12,22 +13,22 @@ namespace HarmonyLibTests.Tools
 		public void Test_Basic_Code_Usage()
 		{
 			var code1 = Ldstr["hello"];
-			Assert.AreEqual(OpCodes.Ldstr, code1.opcode);
-			Assert.AreEqual("hello", code1.operand);
-			Assert.AreEqual(0, code1.labels.Count);
-			Assert.AreEqual(0, code1.blocks.Count);
-			Assert.AreEqual(0, code1.jumpsFrom.Count);
-			Assert.AreEqual(0, code1.jumpsTo.Count);
-			Assert.AreEqual(null, code1.predicate);
+			ClassicAssert.AreEqual(OpCodes.Ldstr, code1.opcode);
+			ClassicAssert.AreEqual("hello", code1.operand);
+			ClassicAssert.AreEqual(0, code1.labels.Count);
+			ClassicAssert.AreEqual(0, code1.blocks.Count);
+			ClassicAssert.AreEqual(0, code1.jumpsFrom.Count);
+			ClassicAssert.AreEqual(0, code1.jumpsTo.Count);
+			ClassicAssert.AreEqual(null, code1.predicate);
 
 			var code2 = Ldarg_0;
-			Assert.AreEqual(OpCodes.Ldarg_0, code2.opcode);
-			Assert.AreEqual(null, code2.operand);
-			Assert.AreEqual(0, code2.labels.Count);
-			Assert.AreEqual(0, code2.blocks.Count);
-			Assert.AreEqual(0, code2.jumpsFrom.Count);
-			Assert.AreEqual(0, code2.jumpsTo.Count);
-			Assert.AreEqual(null, code2.predicate);
+			ClassicAssert.AreEqual(OpCodes.Ldarg_0, code2.opcode);
+			ClassicAssert.AreEqual(null, code2.operand);
+			ClassicAssert.AreEqual(0, code2.labels.Count);
+			ClassicAssert.AreEqual(0, code2.blocks.Count);
+			ClassicAssert.AreEqual(0, code2.jumpsFrom.Count);
+			ClassicAssert.AreEqual(0, code2.jumpsTo.Count);
+			ClassicAssert.AreEqual(null, code2.predicate);
 		}
 
 		[Test]
@@ -35,8 +36,8 @@ namespace HarmonyLibTests.Tools
 		{
 			var code = Ldstr["test", "foo"];
 			var match = new CodeMatch(OpCodes.Ldstr, "test", "foo");
-			Assert.AreEqual("[foo: opcodes=ldstr operands=test]", match.ToString());
-			Assert.AreEqual("[foo: opcodes=ldstr operands=test]", code.ToString());
+			ClassicAssert.AreEqual("[foo: opcodes=ldstr operands=test]", match.ToString());
+			ClassicAssert.AreEqual("[foo: opcodes=ldstr operands=test]", code.ToString());
 		}
 	}
 }

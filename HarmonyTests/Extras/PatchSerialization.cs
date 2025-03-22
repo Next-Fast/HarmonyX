@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Linq;
 using System.Text;
 
@@ -44,7 +45,7 @@ namespace HarmonyTests.Extras
 			PatchInfoSerialization.useBinaryFormatter = false;
 			var result = PatchInfoSerialization.Serialize(patchInfo);
 			var resString = Encoding.UTF8.GetString(result, 0, result.Length);
-			Assert.AreEqual(ExpectedJSON(), resString);
+			ClassicAssert.AreEqual(ExpectedJSON(), resString);
 		}
 
 		[Test]
@@ -60,16 +61,16 @@ namespace HarmonyTests.Extras
 			new[] { patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.ilmanipulators }
 				.Do(fixes =>
 				{
-					Assert.AreEqual(1, fixes.Length);
+					ClassicAssert.AreEqual(1, fixes.Length);
 
-					Assert.AreEqual(names[n++], fixes[0].owner);
-					Assert.AreEqual(Priority.High, fixes[0].priority);
-					Assert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
-					Assert.AreEqual(0, fixes[0].after.Length);
-					Assert.True(fixes[0].debug);
+					ClassicAssert.AreEqual(names[n++], fixes[0].owner);
+					ClassicAssert.AreEqual(Priority.High, fixes[0].priority);
+					ClassicAssert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
+					ClassicAssert.AreEqual(0, fixes[0].after.Length);
+					ClassicAssert.True(fixes[0].debug);
 
 					var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-					Assert.AreEqual(method, fixes[0].PatchMethod);
+					ClassicAssert.AreEqual(method, fixes[0].PatchMethod);
 				});
 		}
 #else
@@ -94,16 +95,16 @@ namespace HarmonyTests.Extras
 			new[] { patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.ilmanipulators }
 				.Do(fixes =>
 				{
-					Assert.AreEqual(1, fixes.Length);
+					ClassicAssert.AreEqual(1, fixes.Length);
 
-					Assert.AreEqual(names[n++], fixes[0].owner);
-					Assert.AreEqual(Priority.High, fixes[0].priority);
-					Assert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
-					Assert.AreEqual(0, fixes[0].after.Length);
-					Assert.True(fixes[0].debug);
+					ClassicAssert.AreEqual(names[n++], fixes[0].owner);
+					ClassicAssert.AreEqual(Priority.High, fixes[0].priority);
+					ClassicAssert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
+					ClassicAssert.AreEqual(0, fixes[0].after.Length);
+					ClassicAssert.True(fixes[0].debug);
 
 					var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-					Assert.AreEqual(method, fixes[0].PatchMethod);
+					ClassicAssert.AreEqual(method, fixes[0].PatchMethod);
 				});
 		}
 #endif

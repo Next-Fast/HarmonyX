@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace HarmonyLibTests.Extras
 {
@@ -15,12 +16,12 @@ namespace HarmonyLibTests.Extras
 				var directBoxValueAccess = i == 0;
 
 				var type = typeof(MethodInvokerClass);
-				Assert.NotNull(type);
+				ClassicAssert.NotNull(type);
 				var method = type.GetMethod("Method1");
-				Assert.NotNull(method);
+				ClassicAssert.NotNull(method);
 
 				var handler = MethodInvoker.GetHandler(method, directBoxValueAccess);
-				Assert.NotNull(handler);
+				ClassicAssert.NotNull(handler);
 
 				var testStruct = new TestMethodInvokerStruct();
 				var boxedTestStruct = (object)testStruct;
@@ -30,13 +31,13 @@ namespace HarmonyLibTests.Extras
 					args[0] = a;
 					var b = (int)args[1];
 					_ = handler(null, args);
-					Assert.AreEqual(a, args[0], "@a={0}", a);
-					Assert.AreEqual(b + 1, args[1], "@a={0}", a);
-					Assert.AreEqual((b + 1) * 2, args[2], "@a={0}", a);
-					Assert.AreEqual(a, ((TestMethodInvokerObject)args[3])?.Value, "@a={0}", a);
-					Assert.AreEqual(a, ((TestMethodInvokerStruct)args[4]).Value, "@a={0}", a);
-					Assert.AreEqual(0, testStruct.Value, "@a={0}", a);
-					Assert.AreEqual(directBoxValueAccess ? a : 0, ((TestMethodInvokerStruct)boxedTestStruct).Value, "@a={0}", a);
+					ClassicAssert.AreEqual(a, args[0], "@a={0}", a);
+					ClassicAssert.AreEqual(b + 1, args[1], "@a={0}", a);
+					ClassicAssert.AreEqual((b + 1) * 2, args[2], "@a={0}", a);
+					ClassicAssert.AreEqual(a, ((TestMethodInvokerObject)args[3])?.Value, "@a={0}", a);
+					ClassicAssert.AreEqual(a, ((TestMethodInvokerStruct)args[4]).Value, "@a={0}", a);
+					ClassicAssert.AreEqual(0, testStruct.Value, "@a={0}", a);
+					ClassicAssert.AreEqual(directBoxValueAccess ? a : 0, ((TestMethodInvokerStruct)boxedTestStruct).Value, "@a={0}", a);
 				}
 			}
 		}
@@ -45,12 +46,12 @@ namespace HarmonyLibTests.Extras
 		public void Test_MethodInvokerSelfObject()
 		{
 			var type = typeof(TestMethodInvokerObject);
-			Assert.NotNull(type);
+			ClassicAssert.NotNull(type);
 			var method = type.GetMethod("Method1");
-			Assert.NotNull(method);
+			ClassicAssert.NotNull(method);
 
 			var handler = MethodInvoker.GetHandler(method);
-			Assert.NotNull(handler);
+			ClassicAssert.NotNull(handler);
 
 			var instance = new TestMethodInvokerObject
 			{
@@ -59,7 +60,7 @@ namespace HarmonyLibTests.Extras
 
 			var args = new object[] { 2 };
 			_ = handler(instance, args);
-			Assert.AreEqual(3, instance.Value);
+			ClassicAssert.AreEqual(3, instance.Value);
 		}
 	}
 }

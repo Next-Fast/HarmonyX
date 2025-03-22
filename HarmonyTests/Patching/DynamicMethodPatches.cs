@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace HarmonyLibTests.Patching
 {
@@ -10,33 +11,33 @@ namespace HarmonyLibTests.Patching
 		public void Test_ByRefResultPrefix()
 		{
 			var originalClass = typeof(Assets.Class11);
-			Assert.NotNull(originalClass);
+			ClassicAssert.NotNull(originalClass);
 
 			var originalMethod = originalClass.GetMethod(nameof(Assets.Class11.TestMethod));
-			Assert.NotNull(originalMethod);
+			ClassicAssert.NotNull(originalMethod);
 
 			var patchClass = typeof(Assets.Class11Patch);
-			Assert.NotNull(patchClass);
+			ClassicAssert.NotNull(patchClass);
 
 			var prefix = patchClass.GetMethod(nameof(Assets.Class11Patch.Prefix));
-			Assert.NotNull(prefix);
+			ClassicAssert.NotNull(prefix);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.NotNull(harmonyInstance);
+			ClassicAssert.NotNull(harmonyInstance);
 
 			var patchResult = harmonyInstance.Patch(
 				original: originalMethod,
 				prefix: new HarmonyMethod(prefix));
 
-			Assert.NotNull(patchResult);
+			ClassicAssert.NotNull(patchResult);
 
 			var instance = new Assets.Class11();
 			var result = instance.TestMethod(0);
 
-			Assert.False(instance.originalMethodRan);
-			Assert.True(Assets.Class11Patch.prefixed);
+			ClassicAssert.False(instance.originalMethodRan);
+			ClassicAssert.True(Assets.Class11Patch.prefixed);
 
-			Assert.AreEqual("patched", result);
+			ClassicAssert.AreEqual("patched", result);
 		}
 	}
 }

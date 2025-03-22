@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -92,19 +93,19 @@ namespace HarmonyLibTests.Patching
 		public void Test_GenericStructReturnTypes()
 		{
 			var originalClass = typeof(MyList<>).MakeGenericType(typeof(int));
-			Assert.NotNull(originalClass);
+			ClassicAssert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("GetEnumerator");
-			Assert.NotNull(originalMethod);
+			ClassicAssert.NotNull(originalMethod);
 
 			var patchClass = typeof(TestGenericStructReturnTypes_Patch);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.NotNull(postfix);
+			ClassicAssert.NotNull(postfix);
 
 			var instance = new Harmony("test");
-			Assert.NotNull(instance);
+			ClassicAssert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.NotNull(patcher);
+			ClassicAssert.NotNull(patcher);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
@@ -115,21 +116,21 @@ namespace HarmonyLibTests.Patching
 			while (enumerator.MoveNext())
 				result.Add(enumerator.Current);
 
-			Assert.AreEqual(3, result.Count);
-			Assert.AreEqual(result[0], 100);
-			Assert.AreEqual(result[1], 200);
-			Assert.AreEqual(result[2], 300);
+			ClassicAssert.AreEqual(3, result.Count);
+			ClassicAssert.AreEqual(result[0], 100);
+			ClassicAssert.AreEqual(result[1], 200);
+			ClassicAssert.AreEqual(result[2], 300);
 		}
 
 		[Test]
 		public void Test_GenericsOriginalMethod()
 		{
 			var originalMethod = typeof(Class13<int>).GetMethod(nameof(Class13<int>.Add));
-			Assert.NotNull(originalMethod);
+			ClassicAssert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class13Patch);
 			var prefix = patchClass.GetMethod("Prefix");
-			Assert.NotNull(prefix);
+			ClassicAssert.NotNull(prefix);
 
 #pragma warning disable IDE0028
 			var list1 = new Class13<int> { 1, 2, 3 };
@@ -140,13 +141,13 @@ namespace HarmonyLibTests.Patching
 			_ = e1.MoveNext();
 			_ = e1.MoveNext();
 			_ = e1.MoveNext();
-			Assert.AreEqual(1000, e1.Current);
+			ClassicAssert.AreEqual(1000, e1.Current);
 
 			var instance = new Harmony("test");
-			Assert.NotNull(instance);
+			ClassicAssert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.NotNull(patcher);
+			ClassicAssert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.Patch();
 
@@ -162,10 +163,10 @@ namespace HarmonyLibTests.Patching
 			_ = e2.MoveNext();
 			_ = e2.MoveNext();
 			_ = e2.MoveNext();
-			Assert.AreEqual(999, e2.Current);
+			ClassicAssert.AreEqual(999, e2.Current);
 
-			Assert.AreEqual(1000, Class13Patch.result);
-			Assert.AreEqual(originalMethod, Class13Patch.method);
+			ClassicAssert.AreEqual(1000, Class13Patch.result);
+			ClassicAssert.AreEqual(originalMethod, Class13Patch.method);
 		}
 	}
 }

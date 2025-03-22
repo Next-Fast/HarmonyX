@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyTests.Tools.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,10 @@ public class Test_CodeMatcher : TestLogger
 	{
 		var method = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 		var match = new CodeMatch(OpCodes.Call, method);
-		Assert.AreEqual(match.opcode, OpCodes.Call);
-		Assert.AreEqual(match.opcodeSet, new HashSet<OpCode>() { OpCodes.Call });
-		Assert.AreEqual(match.operand, method);
-		Assert.AreEqual(match.operands, new[] { method });
+		ClassicAssert.AreEqual(match.opcode, OpCodes.Call);
+		ClassicAssert.AreEqual(match.opcodeSet, new HashSet<OpCode>() { OpCodes.Call });
+		ClassicAssert.AreEqual(match.operand, method);
+		ClassicAssert.AreEqual(match.operands, new[] { method });
 	}
 
 	[Test]
@@ -27,10 +28,10 @@ public class Test_CodeMatcher : TestLogger
 	{
 		var method = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 		var code = Code.Call[method];
-		Assert.AreEqual(code.opcode, OpCodes.Call);
-		Assert.AreEqual(code.opcodeSet, new HashSet<OpCode>() { OpCodes.Call });
-		Assert.AreEqual(code.operand, method);
-		Assert.AreEqual(code.operands, new[] { method });
+		ClassicAssert.AreEqual(code.opcode, OpCodes.Call);
+		ClassicAssert.AreEqual(code.opcodeSet, new HashSet<OpCode>() { OpCodes.Call });
+		ClassicAssert.AreEqual(code.operand, method);
+		ClassicAssert.AreEqual(code.operands, new[] { method });
 	}
 
 	[Test]
@@ -43,8 +44,8 @@ public class Test_CodeMatcher : TestLogger
 		var mBar = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 
 		var matcher = new CodeMatcher(instructions).MatchStartForward(Code.Call[mBar]).ThrowIfNotMatch("not found");
-		Assert.AreEqual(OpCodes.Call, instructions[matcher.Pos].opcode);
-		Assert.AreEqual(mBar, instructions[matcher.Pos].operand);
+		ClassicAssert.AreEqual(OpCodes.Call, instructions[matcher.Pos].opcode);
+		ClassicAssert.AreEqual(mBar, instructions[matcher.Pos].operand);
 	}
 
 	[Test]
@@ -57,20 +58,20 @@ public class Test_CodeMatcher : TestLogger
 		var mBar = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 
 		var matcher = new CodeMatcher(instructions).MatchStartForward(new CodeMatch(OpCodes.Call, mBar)).ThrowIfNotMatch("not found");
-		Assert.AreEqual(OpCodes.Call, instructions[matcher.Pos].opcode);
-		Assert.AreEqual(mBar, instructions[matcher.Pos].operand);
+		ClassicAssert.AreEqual(OpCodes.Call, instructions[matcher.Pos].opcode);
+		ClassicAssert.AreEqual(mBar, instructions[matcher.Pos].operand);
 	}
 
 	[Test]
 	public void TestRepeatReplaceMultiple()
 	{
 		var target = AccessTools.Method(typeof(CodeMatcherClass), nameof(CodeMatcherClass.MultipleFooCalls));
-		Assert.IsNotNull(target);
+		ClassicAssert.IsNotNull(target);
 
 		var matchTarget = AccessTools.Method(typeof(CodeMatcherClass), nameof(CodeMatcherClass.Baz));
-		Assert.IsNotNull(matchTarget);
+		ClassicAssert.IsNotNull(matchTarget);
 		var matchReplacement = AccessTools.Method(typeof(CodeMatcherClass), nameof(CodeMatcherClass.Qux));
-		Assert.IsNotNull(matchReplacement);
+		ClassicAssert.IsNotNull(matchReplacement);
 
 		var instructions = PatchProcessor.GetOriginalInstructions(target);
 		var result = new CodeMatcher(instructions)
@@ -105,7 +106,7 @@ public class Test_CodeMatcher : TestLogger
 
 	private static void AssertSameCode(IEnumerable<CodeInstruction> ins, IEnumerable<CodeInstruction> expected)
 	{
-		Assert.AreEqual(
+		ClassicAssert.AreEqual(
 			expected.Select(i => (i.opcode, i.operand)),
 			ins.Where(i => i.opcode != OpCodes.Nop).Select(i => (i.opcode, i.operand))
 		);

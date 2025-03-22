@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -89,13 +90,13 @@ namespace HarmonyLibTests.Tools
 		[Test, NonParallelizable]
 		public void Test_AccessTools_TypeByName_CurrentAssemblies()
 		{
-			Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
-			Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
-			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
+			ClassicAssert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
+			ClassicAssert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
 		[Test, NonParallelizable]
@@ -122,33 +123,33 @@ namespace HarmonyLibTests.Tools
 			context.AssemblyLoad("HarmonyTestsDummyAssemblyC");
 			// Even if 0Harmony.dll isn't loaded yet and thus would be automatically loaded after the invalid assemblies,
 			// TypeByName tries Type.GetType first, which always works for a type in the executing assembly (0Harmony.dll).
-			Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
+			ClassicAssert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
 			// The current executing assembly (HarmonyTests.dll) was definitely already loaded before above loads.
-			Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
+			ClassicAssert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
 			// HarmonyTestsDummyAssemblyA is explicitly missing, so it's the same as the unknown type case - see below.
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
 			// HarmonyTestsDummyAssemblyB.GetTypes() should throw ReflectionTypeLoadException due to missing HarmonyTestsDummyAssemblyA,
 			// but this is caught and returns successfully loaded types.
 			// HarmonyTestsDummyAssemblyB.Class1 depends on HarmonyTestsDummyAssemblyA, so it's not loaded successfully.
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
 			// HarmonyTestsDummyAssemblyB.Class2 doesn't depend on HarmonyTestsDummyAssemblyA, so it's loaded successfully.
-			Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
+			ClassicAssert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
 			// TypeByName's search should find HarmonyTestsDummyAssemblyB before HarmonyTestsDummyAssemblyC, but this is fine.
-			Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
+			ClassicAssert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
 			// TypeByName's search for an unknown type should always find HarmonyTestsDummyAssemblyB first, which is again fine.
-			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
+			ClassicAssert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
 		static void TestTypeByNameWithNoInvalidAssembly(ITestIsolationContext context)
 		{
 			context.AssemblyLoad("HarmonyTestsDummyAssemblyC");
-			Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
-			Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
-			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
-			Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
-			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
+			ClassicAssert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
+			ClassicAssert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
+			ClassicAssert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
+			ClassicAssert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
 		[Test]
@@ -156,41 +157,41 @@ namespace HarmonyLibTests.Tools
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.Null(AccessTools.DeclaredField(null, null));
-			Assert.Null(AccessTools.DeclaredField(type, null));
-			Assert.Null(AccessTools.DeclaredField(null, "field1"));
-			Assert.Null(AccessTools.DeclaredField(type, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredField(null, null));
+			ClassicAssert.Null(AccessTools.DeclaredField(type, null));
+			ClassicAssert.Null(AccessTools.DeclaredField(null, "field1"));
+			ClassicAssert.Null(AccessTools.DeclaredField(type, "unknown"));
 
 			var field = AccessTools.DeclaredField(type, "field1");
-			Assert.NotNull(field);
-			Assert.AreEqual(type, field.DeclaringType);
-			Assert.AreEqual("field1", field.Name);
+			ClassicAssert.NotNull(field);
+			ClassicAssert.AreEqual(type, field.DeclaringType);
+			ClassicAssert.AreEqual("field1", field.Name);
 		}
 
 		[Test]
 		public void Test_AccessTools_Field2()
 		{
 			var classType = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Field(classType, "field1"));
-			Assert.NotNull(AccessTools.DeclaredField(classType, "field1"));
-			Assert.Null(AccessTools.Field(classType, "unknown"));
-			Assert.Null(AccessTools.DeclaredField(classType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Field(classType, "field1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredField(classType, "field1"));
+			ClassicAssert.Null(AccessTools.Field(classType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredField(classType, "unknown"));
 
 			var subclassType = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Field(subclassType, "field1"));
-			Assert.Null(AccessTools.DeclaredField(subclassType, "field1"));
-			Assert.Null(AccessTools.Field(subclassType, "unknown"));
-			Assert.Null(AccessTools.DeclaredField(subclassType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Field(subclassType, "field1"));
+			ClassicAssert.Null(AccessTools.DeclaredField(subclassType, "field1"));
+			ClassicAssert.Null(AccessTools.Field(subclassType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredField(subclassType, "unknown"));
 
 			var structType = typeof(AccessToolsStruct);
-			Assert.NotNull(AccessTools.Field(structType, "structField1"));
-			Assert.NotNull(AccessTools.DeclaredField(structType, "structField1"));
-			Assert.Null(AccessTools.Field(structType, "unknown"));
-			Assert.Null(AccessTools.DeclaredField(structType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Field(structType, "structField1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredField(structType, "structField1"));
+			ClassicAssert.Null(AccessTools.Field(structType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredField(structType, "unknown"));
 
 			var interfaceType = typeof(IAccessToolsType);
-			Assert.Null(AccessTools.Field(interfaceType, "unknown"));
-			Assert.Null(AccessTools.DeclaredField(interfaceType, "unknown"));
+			ClassicAssert.Null(AccessTools.Field(interfaceType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredField(interfaceType, "unknown"));
 		}
 
 		[Test]
@@ -198,63 +199,63 @@ namespace HarmonyLibTests.Tools
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.Null(AccessTools.Property(null, null));
-			Assert.Null(AccessTools.Property(type, null));
-			Assert.Null(AccessTools.Property(null, "Property1"));
-			Assert.Null(AccessTools.Property(type, "unknown"));
+			ClassicAssert.Null(AccessTools.Property(null, null));
+			ClassicAssert.Null(AccessTools.Property(type, null));
+			ClassicAssert.Null(AccessTools.Property(null, "Property1"));
+			ClassicAssert.Null(AccessTools.Property(type, "unknown"));
 
 			var prop = AccessTools.Property(type, "Property1");
-			Assert.NotNull(prop);
-			Assert.AreEqual(type, prop.DeclaringType);
-			Assert.AreEqual("Property1", prop.Name);
+			ClassicAssert.NotNull(prop);
+			ClassicAssert.AreEqual(type, prop.DeclaringType);
+			ClassicAssert.AreEqual("Property1", prop.Name);
 		}
 
 		[Test]
 		public void Test_AccessTools_Property2()
 		{
 			var classType = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Property(classType, "Property1"));
-			Assert.NotNull(AccessTools.DeclaredProperty(classType, "Property1"));
-			Assert.Null(AccessTools.Property(classType, "unknown"));
-			Assert.Null(AccessTools.DeclaredProperty(classType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Property(classType, "Property1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredProperty(classType, "Property1"));
+			ClassicAssert.Null(AccessTools.Property(classType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredProperty(classType, "unknown"));
 
 			var subclassType = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Property(subclassType, "Property1"));
-			Assert.Null(AccessTools.DeclaredProperty(subclassType, "Property1"));
-			Assert.Null(AccessTools.Property(subclassType, "unknown"));
-			Assert.Null(AccessTools.DeclaredProperty(subclassType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Property(subclassType, "Property1"));
+			ClassicAssert.Null(AccessTools.DeclaredProperty(subclassType, "Property1"));
+			ClassicAssert.Null(AccessTools.Property(subclassType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredProperty(subclassType, "unknown"));
 
 			var structType = typeof(AccessToolsStruct);
-			Assert.NotNull(AccessTools.Property(structType, "Property1"));
-			Assert.NotNull(AccessTools.DeclaredProperty(structType, "Property1"));
-			Assert.Null(AccessTools.Property(structType, "unknown"));
-			Assert.Null(AccessTools.DeclaredProperty(structType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Property(structType, "Property1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredProperty(structType, "Property1"));
+			ClassicAssert.Null(AccessTools.Property(structType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredProperty(structType, "unknown"));
 
 			var interfaceType = typeof(IAccessToolsType);
-			Assert.NotNull(AccessTools.Property(interfaceType, "Property1"));
-			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Property1"));
-			Assert.Null(AccessTools.Property(interfaceType, "unknown"));
-			Assert.Null(AccessTools.DeclaredProperty(interfaceType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Property(interfaceType, "Property1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Property1"));
+			ClassicAssert.Null(AccessTools.Property(interfaceType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredProperty(interfaceType, "unknown"));
 		}
 
 		[Test]
 		public void Test_AccessTools_PropertyIndexer()
 		{
 			var classType = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Property(classType, "Item"));
-			Assert.NotNull(AccessTools.DeclaredProperty(classType, "Item"));
+			ClassicAssert.NotNull(AccessTools.Property(classType, "Item"));
+			ClassicAssert.NotNull(AccessTools.DeclaredProperty(classType, "Item"));
 
 			var subclassType = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Property(subclassType, "Item"));
-			Assert.Null(AccessTools.DeclaredProperty(subclassType, "Item"));
+			ClassicAssert.NotNull(AccessTools.Property(subclassType, "Item"));
+			ClassicAssert.Null(AccessTools.DeclaredProperty(subclassType, "Item"));
 
 			var structType = typeof(AccessToolsStruct);
-			Assert.NotNull(AccessTools.Property(structType, "Item"));
-			Assert.NotNull(AccessTools.DeclaredProperty(structType, "Item"));
+			ClassicAssert.NotNull(AccessTools.Property(structType, "Item"));
+			ClassicAssert.NotNull(AccessTools.DeclaredProperty(structType, "Item"));
 
 			var interfaceType = typeof(IAccessToolsType);
-			Assert.NotNull(AccessTools.Property(interfaceType, "Item"));
-			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Item"));
+			ClassicAssert.NotNull(AccessTools.Property(interfaceType, "Item"));
+			ClassicAssert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Item"));
 		}
 
 		[Test]
@@ -262,54 +263,54 @@ namespace HarmonyLibTests.Tools
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.Null(AccessTools.Method("foo:bar"));
-			Assert.Null(AccessTools.Method(type, null));
-			Assert.Null(AccessTools.Method(null, "Method1"));
-			Assert.Null(AccessTools.Method(type, "unknown"));
+			ClassicAssert.Null(AccessTools.Method("foo:bar"));
+			ClassicAssert.Null(AccessTools.Method(type, null));
+			ClassicAssert.Null(AccessTools.Method(null, "Method1"));
+			ClassicAssert.Null(AccessTools.Method(type, "unknown"));
 
 			var m1 = AccessTools.Method(type, "Method1");
-			Assert.NotNull(m1);
-			Assert.AreEqual(type, m1.DeclaringType);
-			Assert.AreEqual("Method1", m1.Name);
+			ClassicAssert.NotNull(m1);
+			ClassicAssert.AreEqual(type, m1.DeclaringType);
+			ClassicAssert.AreEqual("Method1", m1.Name);
 
 			var m2 = AccessTools.Method("HarmonyLibTests.Assets.AccessToolsClass:Method1");
-			Assert.NotNull(m2);
-			Assert.AreEqual(type, m2.DeclaringType);
-			Assert.AreEqual("Method1", m2.Name);
+			ClassicAssert.NotNull(m2);
+			ClassicAssert.AreEqual(type, m2.DeclaringType);
+			ClassicAssert.AreEqual("Method1", m2.Name);
 
 			var m3 = AccessTools.Method(type, "Method1", []);
-			Assert.NotNull(m3);
+			ClassicAssert.NotNull(m3);
 
 			var m4 = AccessTools.Method(type, "SetField", [typeof(string)]);
-			Assert.NotNull(m4);
+			ClassicAssert.NotNull(m4);
 		}
 
 		[Test]
 		public void Test_AccessTools_Method2()
 		{
 			var classType = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Method(classType, "Method1"));
-			Assert.NotNull(AccessTools.DeclaredMethod(classType, "Method1"));
-			Assert.Null(AccessTools.Method(classType, "unknown"));
-			Assert.Null(AccessTools.DeclaredMethod(classType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Method(classType, "Method1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredMethod(classType, "Method1"));
+			ClassicAssert.Null(AccessTools.Method(classType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredMethod(classType, "unknown"));
 
 			var subclassType = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Method(subclassType, "Method1"));
-			Assert.Null(AccessTools.DeclaredMethod(subclassType, "Method1"));
-			Assert.Null(AccessTools.Method(subclassType, "unknown"));
-			Assert.Null(AccessTools.DeclaredMethod(subclassType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Method(subclassType, "Method1"));
+			ClassicAssert.Null(AccessTools.DeclaredMethod(subclassType, "Method1"));
+			ClassicAssert.Null(AccessTools.Method(subclassType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredMethod(subclassType, "unknown"));
 
 			var structType = typeof(AccessToolsStruct);
-			Assert.NotNull(AccessTools.Method(structType, "Method1"));
-			Assert.NotNull(AccessTools.DeclaredMethod(structType, "Method1"));
-			Assert.Null(AccessTools.Method(structType, "unknown"));
-			Assert.Null(AccessTools.DeclaredMethod(structType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Method(structType, "Method1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredMethod(structType, "Method1"));
+			ClassicAssert.Null(AccessTools.Method(structType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredMethod(structType, "unknown"));
 
 			var interfaceType = typeof(IAccessToolsType);
-			Assert.NotNull(AccessTools.Method(interfaceType, "Method1"));
-			Assert.NotNull(AccessTools.DeclaredMethod(interfaceType, "Method1"));
-			Assert.Null(AccessTools.Method(interfaceType, "unknown"));
-			Assert.Null(AccessTools.DeclaredMethod(interfaceType, "unknown"));
+			ClassicAssert.NotNull(AccessTools.Method(interfaceType, "Method1"));
+			ClassicAssert.NotNull(AccessTools.DeclaredMethod(interfaceType, "Method1"));
+			ClassicAssert.Null(AccessTools.Method(interfaceType, "unknown"));
+			ClassicAssert.Null(AccessTools.DeclaredMethod(interfaceType, "unknown"));
 		}
 
 		[Test]
@@ -317,62 +318,62 @@ namespace HarmonyLibTests.Tools
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.Null(AccessTools.Inner(null, null));
-			Assert.Null(AccessTools.Inner(type, null));
-			Assert.Null(AccessTools.Inner(null, "Inner"));
-			Assert.Null(AccessTools.Inner(type, "unknown"));
+			ClassicAssert.Null(AccessTools.Inner(null, null));
+			ClassicAssert.Null(AccessTools.Inner(type, null));
+			ClassicAssert.Null(AccessTools.Inner(null, "Inner"));
+			ClassicAssert.Null(AccessTools.Inner(type, "unknown"));
 
 			var cls = AccessTools.Inner(type, "Inner");
-			Assert.NotNull(cls);
-			Assert.AreEqual(type, cls.DeclaringType);
-			Assert.AreEqual("Inner", cls.Name);
+			ClassicAssert.NotNull(cls);
+			ClassicAssert.AreEqual(type, cls.DeclaringType);
+			ClassicAssert.AreEqual("Inner", cls.Name);
 		}
 
 		[Test]
 		public void Test_AccessTools_GetTypes()
 		{
 			var empty = AccessTools.GetTypes(null);
-			Assert.NotNull(empty);
-			Assert.AreEqual(0, empty.Length);
+			ClassicAssert.NotNull(empty);
+			ClassicAssert.AreEqual(0, empty.Length);
 
 			// TODO: typeof(null) is ambiguous and resolves for now to <object>. is this a problem?
 			var types = AccessTools.GetTypes(["hi", 123, null, new Test_AccessTools()]);
-			Assert.NotNull(types);
-			Assert.AreEqual(4, types.Length);
-			Assert.AreEqual(typeof(string), types[0]);
-			Assert.AreEqual(typeof(int), types[1]);
-			Assert.AreEqual(typeof(object), types[2]);
-			Assert.AreEqual(typeof(Test_AccessTools), types[3]);
+			ClassicAssert.NotNull(types);
+			ClassicAssert.AreEqual(4, types.Length);
+			ClassicAssert.AreEqual(typeof(string), types[0]);
+			ClassicAssert.AreEqual(typeof(int), types[1]);
+			ClassicAssert.AreEqual(typeof(object), types[2]);
+			ClassicAssert.AreEqual(typeof(Test_AccessTools), types[3]);
 		}
 
 		[Test]
 		public void Test_AccessTools_GetDefaultValue()
 		{
-			Assert.AreEqual(null, AccessTools.GetDefaultValue(null));
-			Assert.AreEqual((float)0, AccessTools.GetDefaultValue(typeof(float)));
-			Assert.AreEqual(null, AccessTools.GetDefaultValue(typeof(string)));
-			Assert.AreEqual(BindingFlags.Default, AccessTools.GetDefaultValue(typeof(BindingFlags)));
-			Assert.AreEqual(null, AccessTools.GetDefaultValue(typeof(IEnumerable<bool>)));
-			Assert.AreEqual(null, AccessTools.GetDefaultValue(typeof(void)));
+			ClassicAssert.AreEqual(null, AccessTools.GetDefaultValue(null));
+			ClassicAssert.AreEqual((float)0, AccessTools.GetDefaultValue(typeof(float)));
+			ClassicAssert.AreEqual(null, AccessTools.GetDefaultValue(typeof(string)));
+			ClassicAssert.AreEqual(BindingFlags.Default, AccessTools.GetDefaultValue(typeof(BindingFlags)));
+			ClassicAssert.AreEqual(null, AccessTools.GetDefaultValue(typeof(IEnumerable<bool>)));
+			ClassicAssert.AreEqual(null, AccessTools.GetDefaultValue(typeof(void)));
 		}
 
 		[Test]
 		public void Test_AccessTools_CreateInstance()
 		{
-			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.NoConstructor>().constructorCalled);
-			Assert.IsFalse(AccessTools.CreateInstance<AccessToolsCreateInstance.OnlyNonParameterlessConstructor>().constructorCalled);
-			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.PublicParameterlessConstructor>().constructorCalled);
-			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.InternalParameterlessConstructor>().constructorCalled);
+			ClassicAssert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.NoConstructor>().constructorCalled);
+			ClassicAssert.IsFalse(AccessTools.CreateInstance<AccessToolsCreateInstance.OnlyNonParameterlessConstructor>().constructorCalled);
+			ClassicAssert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.PublicParameterlessConstructor>().constructorCalled);
+			ClassicAssert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.InternalParameterlessConstructor>().constructorCalled);
 			var instruction = AccessTools.CreateInstance<CodeInstruction>();
-			Assert.NotNull(instruction.labels);
-			Assert.NotNull(instruction.blocks);
+			ClassicAssert.NotNull(instruction.labels);
+			ClassicAssert.NotNull(instruction.blocks);
 		}
 
 		[Test]
 		public void Test_AccessTools_TypeExtension_Description()
 		{
 			var types = new Type[] { typeof(string), typeof(int), null, typeof(void), typeof(Test_AccessTools) };
-			Assert.AreEqual("(string, int, null, void, HarmonyLibTests.Tools.Test_AccessTools)", types.Description());
+			ClassicAssert.AreEqual("(string, int, null, void, HarmonyLibTests.Tools.Test_AccessTools)", types.Description());
 		}
 
 		[Test]
@@ -383,10 +384,10 @@ namespace HarmonyLibTests.Tools
 			var pinfo = method.GetParameters();
 			var types = pinfo.Types();
 
-			Assert.NotNull(types);
-			Assert.AreEqual(2, types.Length);
-			Assert.AreEqual(pinfo[0].ParameterType, types[0]);
-			Assert.AreEqual(pinfo[1].ParameterType, types[1]);
+			ClassicAssert.NotNull(types);
+			ClassicAssert.AreEqual(2, types.Length);
+			ClassicAssert.AreEqual(pinfo[0].ParameterType, types[0]);
+			ClassicAssert.AreEqual(pinfo[1].ParameterType, types[1]);
 		}
 
 		static readonly MethodInfo interfaceTest = typeof(IInterface).GetMethod("Test");
@@ -402,17 +403,17 @@ namespace HarmonyLibTests.Tools
 			var baseInstance = new Base();
 			var derivedInstance = new Derived();
 			var structInstance = new Struct();
-			Assert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<MethodDel>(baseTest, baseInstance, virtualCall: true)(456, ref f));
-			Assert.AreEqual("base test 456 791 2", AccessTools.MethodDelegate<MethodDel>(baseTest, baseInstance, virtualCall: false)(456, ref f));
-			Assert.AreEqual("derived test 456 792 1", AccessTools.MethodDelegate<MethodDel>(baseTest, derivedInstance, virtualCall: true)(456, ref f));
-			Assert.AreEqual("base test 456 793 2", AccessTools.MethodDelegate<MethodDel>(baseTest, derivedInstance, virtualCall: false)(456, ref f));
+			ClassicAssert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<MethodDel>(baseTest, baseInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("base test 456 791 2", AccessTools.MethodDelegate<MethodDel>(baseTest, baseInstance, virtualCall: false)(456, ref f));
+			ClassicAssert.AreEqual("derived test 456 792 1", AccessTools.MethodDelegate<MethodDel>(baseTest, derivedInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("base test 456 793 2", AccessTools.MethodDelegate<MethodDel>(baseTest, derivedInstance, virtualCall: false)(456, ref f));
 			// derivedTest => baseTest automatically for virtual calls
-			Assert.AreEqual("base test 456 794 3", AccessTools.MethodDelegate<MethodDel>(derivedTest, baseInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("base test 456 794 3", AccessTools.MethodDelegate<MethodDel>(derivedTest, baseInstance, virtualCall: true)(456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<MethodDel>(derivedTest, baseInstance, virtualCall: false)(456, ref f));
-			Assert.AreEqual("derived test 456 795 3", AccessTools.MethodDelegate<MethodDel>(derivedTest, derivedInstance, virtualCall: true)(456, ref f));
-			Assert.AreEqual("derived test 456 796 4", AccessTools.MethodDelegate<MethodDel>(derivedTest, derivedInstance, virtualCall: false)(456, ref f));
-			Assert.AreEqual("struct result 456 797 1", AccessTools.MethodDelegate<MethodDel>(structTest, structInstance, virtualCall: true)(456, ref f));
-			Assert.AreEqual("struct result 456 798 1", AccessTools.MethodDelegate<MethodDel>(structTest, structInstance, virtualCall: false)(456, ref f));
+			ClassicAssert.AreEqual("derived test 456 795 3", AccessTools.MethodDelegate<MethodDel>(derivedTest, derivedInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("derived test 456 796 4", AccessTools.MethodDelegate<MethodDel>(derivedTest, derivedInstance, virtualCall: false)(456, ref f));
+			ClassicAssert.AreEqual("struct result 456 797 1", AccessTools.MethodDelegate<MethodDel>(structTest, structInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("struct result 456 798 1", AccessTools.MethodDelegate<MethodDel>(structTest, structInstance, virtualCall: false)(456, ref f));
 		}
 
 		[Test]
@@ -422,11 +423,11 @@ namespace HarmonyLibTests.Tools
 			var baseInstance = new Base();
 			var derivedInstance = new Derived();
 			var structInstance = new Struct();
-			Assert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<MethodDel>(interfaceTest, baseInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<MethodDel>(interfaceTest, baseInstance, virtualCall: true)(456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<MethodDel>(interfaceTest, baseInstance, virtualCall: false)(456, ref f));
-			Assert.AreEqual("derived test 456 791 1", AccessTools.MethodDelegate<MethodDel>(interfaceTest, derivedInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("derived test 456 791 1", AccessTools.MethodDelegate<MethodDel>(interfaceTest, derivedInstance, virtualCall: true)(456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<MethodDel>(interfaceTest, derivedInstance, virtualCall: false)(456, ref f));
-			Assert.AreEqual("struct result 456 792 1", AccessTools.MethodDelegate<MethodDel>(interfaceTest, structInstance, virtualCall: true)(456, ref f));
+			ClassicAssert.AreEqual("struct result 456 792 1", AccessTools.MethodDelegate<MethodDel>(interfaceTest, structInstance, virtualCall: true)(456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<MethodDel>(interfaceTest, structInstance, virtualCall: false)(456, ref f));
 		}
 
@@ -437,21 +438,21 @@ namespace HarmonyLibTests.Tools
 			var baseInstance = new Base();
 			var derivedInstance = new Derived();
 			var structInstance = new Struct();
-			Assert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: true)(baseInstance, 456, ref f));
-			Assert.AreEqual("base test 456 791 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: false)(baseInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 792 1", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: true)(derivedInstance, 456, ref f));
-			Assert.AreEqual("base test 456 793 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: false)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: true)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 791 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: false)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 792 1", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 793 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: false)(derivedInstance, 456, ref f));
 			// derivedTest => baseTest automatically for virtual calls
-			Assert.AreEqual("base test 456 794 3", AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: true)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 794 3", AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: true)(baseInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: false)(baseInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 795 3", AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 795 3", AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: true)(derivedInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: false)(derivedInstance, 456, ref f));
 			// AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest)(baseInstance, 456, ref f); // expected compile error
 			// AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: false)(baseInstance, 456, ref f); // expected compile error
-			Assert.AreEqual("derived test 456 796 4", AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: true)(derivedInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 797 5", AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: false)(derivedInstance, 456, ref f));
-			Assert.AreEqual("struct result 456 798 1", AccessTools.MethodDelegate<OpenMethodDel<Struct>>(structTest, virtualCall: true)(structInstance, 456, ref f));
-			Assert.AreEqual("struct result 456 799 1", AccessTools.MethodDelegate<OpenMethodDel<Struct>>(structTest, virtualCall: false)(structInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 796 4", AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 797 5", AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: false)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("struct result 456 798 1", AccessTools.MethodDelegate<OpenMethodDel<Struct>>(structTest, virtualCall: true)(structInstance, 456, ref f));
+			ClassicAssert.AreEqual("struct result 456 799 1", AccessTools.MethodDelegate<OpenMethodDel<Struct>>(structTest, virtualCall: false)(structInstance, 456, ref f));
 		}
 
 		[Test]
@@ -461,15 +462,15 @@ namespace HarmonyLibTests.Tools
 			var baseInstance = new Base();
 			var derivedInstance = new Derived();
 			var structInstance = new Struct();
-			Assert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(baseTest, virtualCall: true)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(baseTest, virtualCall: true)(baseInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(baseTest, virtualCall: false)(baseInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 791 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(baseTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 791 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(baseTest, virtualCall: true)(derivedInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(baseTest, virtualCall: false)(derivedInstance, 456, ref f));
-			Assert.AreEqual("base test 456 792 2", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(derivedTest, virtualCall: true)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 792 2", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(derivedTest, virtualCall: true)(baseInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(derivedTest, virtualCall: false)(baseInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 793 2", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(derivedTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 793 2", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(derivedTest, virtualCall: true)(derivedInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(derivedTest, virtualCall: false)(derivedInstance, 456, ref f));
-			Assert.AreEqual("struct result 456 794 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(structTest, virtualCall: true)(structInstance, 456, ref f));
+			ClassicAssert.AreEqual("struct result 456 794 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(structTest, virtualCall: true)(structInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(structTest, virtualCall: false)(structInstance, 456, ref f));
 		}
 
@@ -480,21 +481,21 @@ namespace HarmonyLibTests.Tools
 			var baseInstance = new Base();
 			var derivedInstance = new Derived();
 			var structInstance = new Struct();
-			Assert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: true)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 790 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: true)(baseInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: false)(baseInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 791 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 791 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: true)(derivedInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: false)(derivedInstance, 456, ref f));
-			Assert.AreEqual("struct result 456 792 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: true)(structInstance, 456, ref f));
+			ClassicAssert.AreEqual("struct result 456 792 1", AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: true)(structInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<IInterface>>(interfaceTest, virtualCall: false)(structInstance, 456, ref f));
-			Assert.AreEqual("base test 456 793 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(interfaceTest, virtualCall: true)(baseInstance, 456, ref f));
+			ClassicAssert.AreEqual("base test 456 793 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(interfaceTest, virtualCall: true)(baseInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<Base>>(interfaceTest, virtualCall: false)(baseInstance, 456, ref f));
-			Assert.AreEqual("derived test 456 794 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(interfaceTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 794 2", AccessTools.MethodDelegate<OpenMethodDel<Base>>(interfaceTest, virtualCall: true)(derivedInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<Base>>(interfaceTest, virtualCall: false)(derivedInstance, 456, ref f));
 			// AccessTools.MethodDelegate<OpenMethodDel<Derived>>(interfaceTest, virtualCall: true)(baseInstance, 456, ref f)); // expected compile error
 			// AccessTools.MethodDelegate<OpenMethodDel<Derived>>(interfaceTest, virtualCall: false)(baseInstance, 456, ref f)); // expected compile error
-			Assert.AreEqual("derived test 456 795 3", AccessTools.MethodDelegate<OpenMethodDel<Derived>>(interfaceTest, virtualCall: true)(derivedInstance, 456, ref f));
+			ClassicAssert.AreEqual("derived test 456 795 3", AccessTools.MethodDelegate<OpenMethodDel<Derived>>(interfaceTest, virtualCall: true)(derivedInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<Derived>>(interfaceTest, virtualCall: false)(derivedInstance, 456, ref f));
-			Assert.AreEqual("struct result 456 796 1", AccessTools.MethodDelegate<OpenMethodDel<Struct>>(interfaceTest, virtualCall: true)(structInstance, 456, ref f));
+			ClassicAssert.AreEqual("struct result 456 796 1", AccessTools.MethodDelegate<OpenMethodDel<Struct>>(interfaceTest, virtualCall: true)(structInstance, 456, ref f));
 			_ = Assert.Throws(typeof(ArgumentException), () => AccessTools.MethodDelegate<OpenMethodDel<Struct>>(interfaceTest, virtualCall: false)(structInstance, 456, ref f));
 		}
 
@@ -502,9 +503,9 @@ namespace HarmonyLibTests.Tools
 		public void Test_AccessTools_MethodDelegate_StaticDelegates_InterfaceMethod()
 		{
 			var f = 789f;
-			Assert.AreEqual("static test 456 790 1", AccessTools.MethodDelegate<MethodDel>(staticTest)(456, ref f));
+			ClassicAssert.AreEqual("static test 456 790 1", AccessTools.MethodDelegate<MethodDel>(staticTest)(456, ref f));
 			// instance and virtualCall args are ignored
-			Assert.AreEqual("static test 456 791 2", AccessTools.MethodDelegate<MethodDel>(staticTest, new Base(), virtualCall: false)(456, ref f));
+			ClassicAssert.AreEqual("static test 456 791 2", AccessTools.MethodDelegate<MethodDel>(staticTest, new Base(), virtualCall: false)(456, ref f));
 		}
 
 		[Test]
@@ -524,7 +525,7 @@ namespace HarmonyLibTests.Tools
 		{
 			var someMethod = AccessTools.HarmonyDelegate<AccessToolsHarmonyDelegate.FooSomeMethod>();
 			var foo = new AccessToolsHarmonyDelegate.Foo();
-			Assert.AreEqual("[test]", someMethod(foo, "test"));
+			ClassicAssert.AreEqual("[test]", someMethod(foo, "test"));
 		}
 	}
 }

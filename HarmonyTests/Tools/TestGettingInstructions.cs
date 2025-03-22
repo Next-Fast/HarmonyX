@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -42,32 +43,32 @@ namespace HarmonyLibTests.Tools
 			var instance = new InstructionTest();
 			var method = SymbolExtensions.GetMethodInfo(() => instance.Method(""));
 
-			Assert.AreEqual(1, instance.Method("Foo Bar"), "method output 1");
+			ClassicAssert.AreEqual(1, instance.Method("Foo Bar"), "method output 1");
 
 			var originalInstructions = PatchProcessor.GetCurrentInstructions(method);
 			var m_get_Chars = AccessTools.Method("System.String:get_Chars");
-			Assert.IsTrue(originalInstructions.Any(instr => instr.Calls(m_get_Chars)));
+			ClassicAssert.IsTrue(originalInstructions.Any(instr => instr.Calls(m_get_Chars)));
 			var m_get_Length = AccessTools.Method("System.String:get_Length");
-			Assert.IsTrue(originalInstructions.Any(instr => instr.Calls(m_get_Length)));
+			ClassicAssert.IsTrue(originalInstructions.Any(instr => instr.Calls(m_get_Length)));
 
 			var processor = new PatchClassProcessor(new Harmony("instructions"), typeof(InstructionTest.Patch));
 			var patches = processor.Patch();
-			Assert.AreEqual(1, patches.Count, "patch count");
+			ClassicAssert.AreEqual(1, patches.Count, "patch count");
 
-			Assert.AreEqual(1, instance.Method("Foo*Bar"), "method output 2");
+			ClassicAssert.AreEqual(1, instance.Method("Foo*Bar"), "method output 2");
 
 			var newInstructions = PatchProcessor.GetCurrentInstructions(method);
-			Assert.AreEqual(originalInstructions.Count, newInstructions.Count, "instruction count");
+			ClassicAssert.AreEqual(originalInstructions.Count, newInstructions.Count, "instruction count");
 
 			var changed = new List<CodeInstruction>();
 			for (var i = 0; i < originalInstructions.Count; i++)
 				if (originalInstructions[i].ToString() != newInstructions[i].ToString())
 					changed.Add(newInstructions[i]);
-			Assert.AreEqual(1, changed.Count, "change count");
-			Assert.AreEqual('*', changed[0].operand);
+			ClassicAssert.AreEqual(1, changed.Count, "change count");
+			ClassicAssert.AreEqual('*', changed[0].operand);
 
 			var unchangedInstructions = PatchProcessor.GetCurrentInstructions(method, 0);
-			Assert.AreEqual(originalInstructions.Count, unchangedInstructions.Count, "unchanged count");
+			ClassicAssert.AreEqual(originalInstructions.Count, unchangedInstructions.Count, "unchanged count");
 
 			for (var i = 0; i < originalInstructions.Count; i++)
 				if (originalInstructions[i].ToString() != unchangedInstructions[i].ToString())

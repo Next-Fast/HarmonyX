@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -205,21 +206,21 @@ namespace HarmonyLibTests.IL
 			_ = TestMethods3.Test3(new Vec3(2, 4, 6), [100, 200, 300]);
 
 			var n = 0;
-			Assert.AreEqual(11, log.Count);
+			ClassicAssert.AreEqual(11, log.Count);
 
-			Assert.AreEqual(log[n++], "Test1");
-			Assert.AreEqual(log[n++], "NULL");
-			Assert.AreEqual(log[n++], "NULL");
+			ClassicAssert.AreEqual(log[n++], "Test1");
+			ClassicAssert.AreEqual(log[n++], "NULL");
+			ClassicAssert.AreEqual(log[n++], "NULL");
 
-			Assert.AreEqual(log[n++], "Test2");
-			Assert.AreEqual(log[n++], "TestMethods2");
-			Assert.AreEqual(log[n++], "123");
-			Assert.AreEqual(log[n++], "hello");
+			ClassicAssert.AreEqual(log[n++], "Test2");
+			ClassicAssert.AreEqual(log[n++], "TestMethods2");
+			ClassicAssert.AreEqual(log[n++], "123");
+			ClassicAssert.AreEqual(log[n++], "hello");
 
-			Assert.AreEqual(log[n++], "Test3");
-			Assert.AreEqual(log[n++], "NULL");
-			Assert.AreEqual(log[n++], "2,4,6");
-			Assert.AreEqual(log[n++], "System.Collections.Generic.List`1[System.Int32]");
+			ClassicAssert.AreEqual(log[n++], "Test3");
+			ClassicAssert.AreEqual(log[n++], "NULL");
+			ClassicAssert.AreEqual(log[n++], "2,4,6");
+			ClassicAssert.AreEqual(log[n++], "System.Collections.Generic.List`1[System.Int32]");
 		}
 	}
 }

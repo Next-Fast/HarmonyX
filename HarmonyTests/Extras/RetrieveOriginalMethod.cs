@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -12,21 +13,21 @@ namespace HarmonyLibTests.Extras
 	{
 		private static void CheckStackTraceFor(MethodBase expectedMethod)
 		{
-			Assert.NotNull(expectedMethod);
+			ClassicAssert.NotNull(expectedMethod);
 
 			var st = new StackTrace(1, false);
 			var frame = st.GetFrame(0);
-			Assert.NotNull(frame);
+			ClassicAssert.NotNull(frame);
 
 			var methodFromStackframe = Harmony.GetMethodFromStackframe(frame);
-			Assert.NotNull(methodFromStackframe);
-			Assert.AreEqual(expectedMethod, methodFromStackframe);
+			ClassicAssert.NotNull(methodFromStackframe);
+			ClassicAssert.AreEqual(expectedMethod, methodFromStackframe);
 
 			var replacement = frame.GetMethod() as MethodInfo;
-			Assert.NotNull(replacement);
+			ClassicAssert.NotNull(replacement);
 			var original = Harmony.GetOriginalMethod(replacement);
-			Assert.NotNull(original);
-			Assert.AreEqual(expectedMethod, original);
+			ClassicAssert.NotNull(original);
+			ClassicAssert.AreEqual(expectedMethod, original);
 		}
 
 		[Test]

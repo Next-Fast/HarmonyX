@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,25 +18,25 @@ namespace HarmonyLibTests.Tools
 			var instance = new TraverseTypes<InnerClass>();
 			var trv = Traverse.Create(instance);
 
-			Assert.AreEqual(
+			ClassicAssert.AreEqual(
 				100,
 				trv.Field("IntField").GetValue<int>()
 			);
 
-			Assert.AreEqual(
+			ClassicAssert.AreEqual(
 				"hello",
 				trv.Field("StringField").GetValue<string>()
 			);
 
 			var boolArray = trv.Field("ListOfBoolField").GetValue<IEnumerable<bool>>().ToArray();
-			Assert.AreEqual(true, boolArray[0]);
-			Assert.AreEqual(false, boolArray[1]);
+			ClassicAssert.AreEqual(true, boolArray[0]);
+			ClassicAssert.AreEqual(false, boolArray[1]);
 
 			var mixed = trv.Field("MixedField").GetValue<Dictionary<InnerClass, List<string>>>();
 			var key = trv.Field("key").GetValue<InnerClass>();
 
 			_ = mixed.TryGetValue(key, out var value);
-			Assert.AreEqual("world", value.First());
+			ClassicAssert.AreEqual("world", value.First());
 
 			var trvEmpty = Traverse.Create(instance).Type("FooBar");
 			TestTraverse_Basics.AssertIsEmpty(trvEmpty);
@@ -52,7 +53,7 @@ namespace HarmonyLibTests.Tools
 
 			var trv2 = Traverse.Create(instance);
 			var field2 = trv2.Field("innerInstance").Field("inner2").Field("field");
-			Assert.AreEqual("somevalue", field2.GetValue());
+			ClassicAssert.AreEqual("somevalue", field2.GetValue());
 		}
 
 #if !NET5_0_OR_GREATER // writing to static fields after init not allowed in NET5
@@ -65,7 +66,7 @@ namespace HarmonyLibTests.Tools
 
 			var trv2 = Traverse.Create(typeof(TraverseNestedTypes));
 			var field2 = trv2.Field("innerStatic").Field("inner2").Field("field");
-			Assert.AreEqual("somevalue1", field2.GetValue());
+			ClassicAssert.AreEqual("somevalue1", field2.GetValue());
 
 			_ = new TraverseNestedTypes("somevalue2");
 			var value = Traverse
@@ -74,7 +75,7 @@ namespace HarmonyLibTests.Tools
 				.Type("InnerStaticClass2")
 				.Field("field")
 				.GetValue<string>();
-			Assert.AreEqual("somevalue2", value);
+			ClassicAssert.AreEqual("somevalue2", value);
 		}
 #endif
 	}

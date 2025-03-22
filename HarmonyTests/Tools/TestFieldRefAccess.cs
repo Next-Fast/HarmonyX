@@ -2,6 +2,7 @@ using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -74,6 +75,7 @@ namespace HarmonyLibTests.Tools
 		class SkipTestConstraint(string reason) : Constraint(reason)
 		{
 			public override ConstraintResult ApplyTo<TActual>(TActual actual) => throw new InvalidOperationException(ToString());
+			public override string Description { get; }
 		}
 
 		// As a final check during a test case, ATestSuite checks that field.FieldType.IsInstanceOfType(field.GetValue(instance)),
@@ -117,7 +119,7 @@ namespace HarmonyLibTests.Tools
 					Assert.That(expectedCaseToConstraint.Keys, Is.EquivalentTo(availableTestCases.Keys),
 						"expectedCaseToConstraint and availableTestCases must have same test cases");
 					Assert.That(instancePrototypes, Contains.Key(instanceType));
-					Assert.IsTrue(typeof(T).IsAssignableFrom(instanceType), "{0} must be assignable from {1}", typeof(T), instanceType);
+					ClassicAssert.IsTrue(typeof(T).IsAssignableFrom(instanceType), "{0} must be assignable from {1}", typeof(T), instanceType);
 				});
 				this.instanceType = instanceType;
 				this.field = field;
@@ -163,15 +165,15 @@ namespace HarmonyLibTests.Tools
 				{
 					constraintResult = TestTools.AssertThat(() =>
 					{
-						Assert.AreNotEqual(origValue, testValue,
+						ClassicAssert.AreNotEqual(origValue, testValue,
 							"{0}: expected !Equals(origValue, testValue) (indicates static field didn't get reset properly)", testCaseLabel);
 						var value = testCase.Get(ref instance);
 						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
 						_ = value?.ToString();
-						Assert.AreEqual(TryConvert(origValue), value, "{0}: expected Equals(origValue, value)", testCaseLabel);
+						ClassicAssert.AreEqual(TryConvert(origValue), value, "{0}: expected Equals(origValue, value)", testCaseLabel);
 						testCase.Set(ref instance, testValue);
 						var newValue = field.GetValue(instance);
-						Assert.AreEqual(testValue, TryConvert(newValue), "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
+						ClassicAssert.AreEqual(testValue, TryConvert(newValue), "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
 						TestTools.Log($"{field.Name}: {origValue} => {testCase.Get(ref instance)}");
 						testCase.Set(ref instance, value); // reset field value
 						if (field.FieldType.IsInstanceOfType(newValue) is false)
@@ -288,7 +290,7 @@ namespace HarmonyLibTests.Tools
 		static void TestSuite_Class<T, I, F>(FieldInfo field, F testValue,
 			Dictionary<string, ReusableConstraint> expectedCaseToConstraint) where T : class
 		{
-			TestTools.AssertImmediate(() => Assert.NotNull(field));
+			TestTools.AssertImmediate(() => ClassicAssert.NotNull(field));
 			var availableTestCases = Merge(
 				AvailableTestCases_FieldRefAccess_ByName<T, F>(field.Name),
 				AvailableTestCases_FieldRefAccess_ByFieldInfo<T, F>(field),
@@ -300,7 +302,7 @@ namespace HarmonyLibTests.Tools
 		static void TestSuite_Struct<T, F>(FieldInfo field, F testValue,
 			Dictionary<string, ReusableConstraint> expectedCaseToConstraint) where T : struct
 		{
-			TestTools.AssertImmediate(() => Assert.NotNull(field));
+			TestTools.AssertImmediate(() => ClassicAssert.NotNull(field));
 			var availableTestCases = Merge(
 				AvailableTestCases_StructFieldRefAccess<T, F>(field, field.Name),
 				AvailableTestCases_FieldRefAccess_ByName<T, F>(field.Name),

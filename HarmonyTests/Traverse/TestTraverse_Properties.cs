@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace HarmonyLibTests.Tools
 {
@@ -15,7 +16,7 @@ namespace HarmonyLibTests.Tools
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
 
 			var trv = Traverse.Create(instance).Property(TraverseProperties.propertyNames[0]);
-			Assert.AreEqual(TraverseProperties.testStrings[0], trv.ToString());
+			ClassicAssert.AreEqual(TraverseProperties.testStrings[0], trv.ToString());
 		}
 
 		// Traverse.Property() should return static properties
@@ -26,11 +27,11 @@ namespace HarmonyLibTests.Tools
 			var instance = new Traverse_BaseClass();
 
 			var trv1 = Traverse.Create(instance).Property("StaticProperty");
-			Assert.AreEqual("test1", trv1.GetValue());
+			ClassicAssert.AreEqual("test1", trv1.GetValue());
 
 
 			var trv2 = Traverse.Create(typeof(TraverseProperties_Static)).Property("StaticProperty");
-			Assert.AreEqual("test2", trv2.GetValue());
+			ClassicAssert.AreEqual("test2", trv2.GetValue());
 		}
 
 		// Traverse.GetValue() should return the value of a traversed property
@@ -46,9 +47,9 @@ namespace HarmonyLibTests.Tools
 			{
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
-				Assert.NotNull(ptrv);
-				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
-				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
+				ClassicAssert.NotNull(ptrv);
+				ClassicAssert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
+				ClassicAssert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
 			}
 		}
 
@@ -66,17 +67,17 @@ namespace HarmonyLibTests.Tools
 				var newValue = "newvalue" + i;
 
 				// before
-				Assert.AreEqual(TraverseProperties.testStrings[i], instance.GetTestProperty(i));
+				ClassicAssert.AreEqual(TraverseProperties.testStrings[i], instance.GetTestProperty(i));
 
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
-				Assert.NotNull(ptrv);
+				ClassicAssert.NotNull(ptrv);
 				_ = ptrv.SetValue(newValue);
 
 				// after
-				Assert.AreEqual(newValue, instance.GetTestProperty(i));
-				Assert.AreEqual(newValue, ptrv.GetValue());
-				Assert.AreEqual(newValue, ptrv.GetValue<string>());
+				ClassicAssert.AreEqual(newValue, instance.GetTestProperty(i));
+				ClassicAssert.AreEqual(newValue, ptrv.GetValue());
+				ClassicAssert.AreEqual(newValue, ptrv.GetValue<string>());
 			}
 		}
 	}

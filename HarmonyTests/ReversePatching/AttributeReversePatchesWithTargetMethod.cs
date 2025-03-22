@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace HarmonyLibTests.ReversePatching
 {
@@ -13,20 +14,20 @@ namespace HarmonyLibTests.ReversePatching
 		public void Test_ReversePatchingWithAttributesWithTargetMethod()
 		{
 			var getExtraMethodInfo = AccessTools.Method(typeof(Class1Reverse), "GetExtra");
-			Assert.NotNull(getExtraMethodInfo);
+			ClassicAssert.NotNull(getExtraMethodInfo);
 
 			var result1 = getExtraMethodInfo.Invoke(null, [123]);
-			Assert.AreEqual("Extra123", result1);
+			ClassicAssert.AreEqual("Extra123", result1);
 
 			var instance = new Harmony("test");
-			Assert.NotNull(instance);
+			ClassicAssert.NotNull(instance);
 
 			var processor = instance.CreateClassProcessor(typeof(Class1ReversePatchWithTargetMethod));
-			Assert.NotNull(processor);
-			Assert.NotNull(processor.Patch());
+			ClassicAssert.NotNull(processor);
+			ClassicAssert.NotNull(processor.Patch());
 
 			var result2 = Class1ReversePatchWithTargetMethod.GetExtra(123);
-			Assert.AreEqual(result1, result2);
+			ClassicAssert.AreEqual(result1, result2);
 		}
 	}
 }

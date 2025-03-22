@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -24,16 +25,16 @@ namespace HarmonyLibTests.Patching
 		public void Test_TranspilerNullLabels()
 		{
 			var original = AccessTools.Method(typeof(ClassNullLabelTest), nameof(ClassNullLabelTest.Method));
-			Assert.NotNull(original);
+			ClassicAssert.NotNull(original);
 
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.NullLabelBlocksTranspiler));
-			Assert.NotNull(transpiler);
+			ClassicAssert.NotNull(transpiler);
 
 			var instance = new Harmony("test-null-labels");
 			_ = instance.Patch(original, null, null, new HarmonyMethod(transpiler));
 
 			new ClassNullLabelTest().Method();
-			Assert.True(ClassNullLabelTest.originalExecuted);
+			ClassicAssert.True(ClassNullLabelTest.originalExecuted);
 		}
 
 		[Test]
@@ -42,21 +43,21 @@ namespace HarmonyLibTests.Patching
 			var test = new Class3();
 
 			test.TestMethod("start");
-			Assert.AreEqual(test.GetLog, "start,test,ex:DivideByZeroException,finally,end");
+			ClassicAssert.AreEqual(test.GetLog, "start,test,ex:DivideByZeroException,finally,end");
 
 			var original = AccessTools.Method(typeof(Class3), nameof(Class3.TestMethod));
-			Assert.NotNull(original);
+			ClassicAssert.NotNull(original);
 
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(TestTranspiler));
-			Assert.NotNull(transpiler);
+			ClassicAssert.NotNull(transpiler);
 
 			var instance = new Harmony("test-exception1");
 			_ = instance.Patch(original, null, null, new HarmonyMethod(transpiler));
-			Assert.NotNull(savedInstructions);
-			Assert.AreEqual(savedInstructions.Length, codeLength);
+			ClassicAssert.NotNull(savedInstructions);
+			ClassicAssert.AreEqual(savedInstructions.Length, codeLength);
 
 			test.TestMethod("restart");
-			Assert.AreEqual(test.GetLog, "restart,test,patch,ex:DivideByZeroException,finally,end");
+			ClassicAssert.AreEqual(test.GetLog, "restart,test,patch,ex:DivideByZeroException,finally,end");
 		}
 
 		public static IEnumerable<CodeInstruction> NullLabelBlocksTranspiler(IEnumerable<CodeInstruction> instructions)
@@ -99,35 +100,35 @@ namespace HarmonyLibTests.Patching
 		public void Test_LazyTranspilerOnlyRunsOncePerPatch()
 		{
 			var original = AccessTools.Method(typeof(LazyTranspilerRunsOnce_Class), nameof(LazyTranspilerRunsOnce_Class.Method));
-			Assert.NotNull(original);
+			ClassicAssert.NotNull(original);
 
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(LazyTranspiler));
-			Assert.NotNull(transpiler);
+			ClassicAssert.NotNull(transpiler);
 
 			var instance = new Harmony("test-lazytranspiler");
 			// Add the transpiler twice.
 			LazyTranspilerRunsOnce_Class.counter = 0;
 			_ = instance.Patch(original, transpiler: new HarmonyMethod(transpiler));
-			Assert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 1);
+			ClassicAssert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 1);
 			LazyTranspilerRunsOnce_Class.counter = 0;
 			_ = instance.Patch(original, transpiler: new HarmonyMethod(transpiler));
-			Assert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 2);
+			ClassicAssert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 2);
 		}
 
 		[Test]
 		public void Test_Empty_Transpiler()
 		{
 			var original = AccessTools.Method(typeof(ClassEmptyTranspilerTest), nameof(ClassEmptyTranspilerTest.Method));
-			Assert.NotNull(original);
+			ClassicAssert.NotNull(original);
 
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.EmptyTranspiler));
-			Assert.NotNull(transpiler);
+			ClassicAssert.NotNull(transpiler);
 
 			var instance = new Harmony("test-empty-transpiler");
 			_ = instance.Patch(original, null, null, new HarmonyMethod(transpiler));
 
 			new ClassEmptyTranspilerTest().Method();
-			Assert.False(ClassNullLabelTest.originalExecuted);
+			ClassicAssert.False(ClassNullLabelTest.originalExecuted);
 		}
 
 		public static IEnumerable<CodeInstruction> EmptyTranspiler(IEnumerable<CodeInstruction> _)

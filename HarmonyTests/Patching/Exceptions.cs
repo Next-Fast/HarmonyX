@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace HarmonyLibTests.Patching
 {
@@ -14,15 +15,15 @@ namespace HarmonyLibTests.Patching
 		public void TestExceptionsWithFilter()
 		{
 			var originalClass = typeof(ClassExceptionFilter);
-			Assert.NotNull(originalClass);
+			ClassicAssert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method1");
-			Assert.NotNull(originalMethod);
+			ClassicAssert.NotNull(originalMethod);
 
 			var instance = new Harmony("test");
-			Assert.NotNull(instance);
+			ClassicAssert.NotNull(instance);
 
 			var patcher = new PatchProcessor(instance, originalMethod);
-			Assert.NotNull(patcher);
+			ClassicAssert.NotNull(patcher);
 			_ = patcher.Patch();
 
 			ClassExceptionFilter.Method1();
@@ -33,19 +34,19 @@ namespace HarmonyLibTests.Patching
 		public void TestPlainMethodExceptions()
 		{
 			var originalClass = typeof(ClassExceptionFilter);
-			Assert.NotNull(originalClass);
+			ClassicAssert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method2");
-			Assert.NotNull(originalMethod);
+			ClassicAssert.NotNull(originalMethod);
 
 			var instance = new Harmony("test");
-			Assert.NotNull(instance);
+			ClassicAssert.NotNull(instance);
 
 			var patcher = new PatchProcessor(instance, originalMethod);
-			Assert.NotNull(patcher);
+			ClassicAssert.NotNull(patcher);
 			_ = patcher.Patch();
 
 			var result = ClassExceptionFilter.Method2(null);
-			Assert.AreEqual(100, result);
+			ClassicAssert.AreEqual(100, result);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 using HarmonyLib;
 using MonoMod.Cil;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace HarmonyLibTests.Patching
 		{
 			var thisAssembly = Assembly.GetExecutingAssembly();
 
-			Assert.AreEqual(assembly, thisAssembly);
+			ClassicAssert.AreEqual(assembly, thisAssembly);
 		}
 
 		private static void Prefix(ref Assembly assembly) => assembly = Assembly.GetExecutingAssembly();
@@ -24,7 +25,7 @@ namespace HarmonyLibTests.Patching
 		{
 			var thisAssembly = Assembly.GetExecutingAssembly();
 
-			Assert.AreEqual(assembly, thisAssembly);
+			ClassicAssert.AreEqual(assembly, thisAssembly);
 		}
 
 		private static void Finalizer(Exception __exception) { }
@@ -49,7 +50,7 @@ namespace HarmonyLibTests.Patching
 			);
 			// Check that it still work with Harmony's global patch
 			var assemblyPatched = Assembly.GetExecutingAssembly();
-			Assert.AreEqual(assemblyOriginal, assemblyPatched);
+			ClassicAssert.AreEqual(assemblyOriginal, assemblyPatched);
 		}
 
 		[Test]
@@ -67,7 +68,7 @@ namespace HarmonyLibTests.Patching
 			// Check that the patched method correctly returns the assembly
 			Assembly methodAssembly = null;
 			Method(ref methodAssembly);
-			Assert.AreEqual(assemblyOriginal, methodAssembly);
+			ClassicAssert.AreEqual(assemblyOriginal, methodAssembly);
 		}
 
 		[Test]
@@ -75,7 +76,7 @@ namespace HarmonyLibTests.Patching
 		{
 			TestPatch.TestGlobalPatch(out var assemblyOriginal, out var assemblyPatched);
 
-			Assert.AreEqual(assemblyOriginal, assemblyPatched);
+			ClassicAssert.AreEqual(assemblyOriginal, assemblyPatched);
 		}
 
 		[Test]
@@ -83,8 +84,8 @@ namespace HarmonyLibTests.Patching
 		{
 			TestPatch.TestPatching(out var prefix, out var original, out var postfix);
 
-			Assert.AreEqual(original, prefix);
-			Assert.AreEqual(original, postfix);
+			ClassicAssert.AreEqual(original, prefix);
+			ClassicAssert.AreEqual(original, postfix);
 		}
 	}
 }

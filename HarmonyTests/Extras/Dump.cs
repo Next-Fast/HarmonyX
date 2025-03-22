@@ -3,6 +3,7 @@ using HarmonyLibTests;
 using MonoMod.Cil;
 using MonoMod.Utils;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Linq;
 
@@ -28,9 +29,10 @@ public class Dump : TestLogger
 
 		using var dumpedModule = CecilEmitter.DumpImpl(method);
 		var dumpedMethod = dumpedModule.Types.SelectMany(i => i.Methods).FirstOrDefault();
-		Assert.NotNull(dumpedMethod);
+
+		ClassicAssert.NotNull(dumpedMethod);
 
 		var instructions = dumpedMethod!.Body.Instructions;
-		Assert.True(instructions[0].Operand == instructions[1]);
+		ClassicAssert.True(instructions[0].Operand == instructions[1]);
 	}
 }
